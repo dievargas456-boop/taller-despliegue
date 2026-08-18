@@ -30,6 +30,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
 
-  @Column({ type: 'varchar', default: true })
-  test!: boolean;
+  @Column({ type: 'varchar', default: 'test' })
+  test!: string;
 }
