@@ -23,9 +23,13 @@ export class User {
   @Column({ type: 'boolean', default: true })
   isActive!: boolean;
 
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt!: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt!: Date;
+
+  @Column({ type: 'boolean', default: true })
+  test!: boolean;
 }
