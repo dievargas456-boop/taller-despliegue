@@ -1,24 +1,58 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-//De @nestjs/common: los decoradores para definir rutas 
-//(Get, Post, Delete), para tomar datos de la URL (Param) y del cuerpo de la petición (Body)
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-//De @nestjs/swagger: los decoradores que generan la documentación
+// De @nestjs/common: decoradores para definir las rutas HTTP
+// (Get, Post, Delete, Patch), tomar datos de la URL (Param)
+// y recibir datos del cuerpo de la petición (Body).
+
+import {
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
+
+// De @nestjs/swagger: decoradores que generan la documentación
+// de la API en Swagger.
+
 import { UsersService } from '../services/users.service';
-//El UsersService (la lógica real) y el CreateUserDto (la forma que debe tener el JSON al crear un usuario)
+
+// UsersService contiene la lógica de los usuarios.
+
 import { CreateUserDto } from '../dtos/create-user.dto';
+
+// CreateUserDto define la estructura de los datos
+// necesarios para crear un usuario.
+
+import { UpdateUserDto } from '../dtos/update-user.dto';
+
+// UpdateUserDto define la estructura de los datos
+// necesarios para actualizar un usuario.
+
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {} //inyección de dependencias: le pido a NestJS
-        // que me dé una instancia de UsersService ya lista para usar, sin tener que crearla yo mismo con new.
+
+  constructor(private readonly usersService: UsersService) {
+    // Inyección de dependencias:
+    // NestJS nos entrega una instancia de UsersService
+    // lista para utilizar, sin tener que hacer new UsersService().
+  }
+
 
   @Get()
   @ApiOperation({ summary: 'Listar todos los usuarios' })
   findAll() {
     return this.usersService.findAll();
   }
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Buscar un usuario por id' })
@@ -27,14 +61,25 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
- //Esta parte recibe la petición HTTP POST /users con el JSON que mandas, y se lo pasa al Service.
+
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo usuario' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
- //Recibe la petición DELETE /users/:id, toma el id de la URL y se lo pasa al Service.
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Actualizar un usuario por id' })
+  @ApiParam({ name: 'id' })
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un usuario por id' })
   @ApiParam({ name: 'id' })
